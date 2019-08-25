@@ -78,10 +78,19 @@ class SudokuTable():
   def set_cell(self, row, column, value):
     if not self._valid_value(value):
       raise InvalidSudokuValue("The value {} is not valid in Sudoku, or in this table.".format(value))
+    
+    value_before = self.get_cell(row, column)
+
     try:
        self._table[row][column] = value
     except IndexError:
       raise ItemNotFound("The cell in row {} and column {} is out of range.".format(row, column))
+    
+    check_results = (self.check_valid_row(row), self.check_valid_column(column), self.check_valid_square(row, column))
+    if False in check_results:
+      self._table[row][column] = value_before
+      raise SudokuMistake("{} can't be placed in row {} and column {}.".format(value, row, column))
+    
 
 
   #-- P R I V A T E   F U N C T I O N S --#
@@ -102,22 +111,16 @@ class SudokuTable():
       process_table.append(process_row)
     return process_table
 
-
-class SudokuSolver():
-
-  def __init__(self, table):
-    self._table = table
-  
   #-- C H E C K S --#
 
   def check_valid_row(self, row_index):
-    return self._check_valid_list(self._table.get_row(row_index))
+    return self._check_valid_list(self.get_row(row_index))
 
   def check_valid_column(self, col_index):
-    return self._check_valid_list(self._table.get_column(col_index))
+    return self._check_valid_list(self.get_column(col_index))
 
   def check_valid_square(self, row_index, col_index):
-    return self._check_valid_list(self._table.get_square(row_index, col_index))
+    return self._check_valid_list(self.get_square(row_index, col_index))
 
   # checks for duplicates in a list. used to check valid row, columns and squares
   def _check_valid_list(self, in_list):
@@ -132,7 +135,7 @@ class SudokuSolver():
   
   # checks every row, column and square in the table
   def check_valid_table(self):
-    for cur_index in range(self._table.get_full_size()):
+    for cur_index in range(self.get_full_size()):
 
       if self.check_valid_row(cur_index) == False:
         return False
@@ -140,8 +143,8 @@ class SudokuSolver():
       if self.check_valid_column(cur_index) == False:
         return False
 
-      square_row = (cur_index // self._table.get_size()) * self._table.get_size()
-      square_column = (cur_index % self._table.get_size()) * self._table.get_size()
+      square_row = (cur_index // self.get_size()) * self.get_size()
+      square_column = (cur_index % self.get_size()) * self.get_size()
       if self.check_valid_square(square_row, square_column) == False:
         return False
     return True
@@ -158,4 +161,7 @@ class TableInvalidSize(Exception):
   pass
 
 class InvalidSudokuValue(Exception):
+  pass
+
+class SudokuMistake(Exception):
   pass

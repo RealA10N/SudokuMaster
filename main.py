@@ -7,23 +7,20 @@ class SudokuTable():
 
     self._table_size = size
     self._table_full_size = size**2
-    self._empty_index = None
     self._table = self._gen_empty_table()
   
   def print_table(self):
     for row in self._table:
       wip_row = '|'
       for item in row:
-        if item == self._empty_index:
+        if item is None:
           wip_row += ' x |'
         else:
           wip_row += ' {} |'.format(item)
       print(wip_row)
   
 
-  # # # # # #
-  # G E T S #
-  # # # # # #
+  #-- G E T S --#
 
   # returns list of all the rows in the table
   def get_table(self):
@@ -75,9 +72,7 @@ class SudokuTable():
     return self._table_full_size
 
 
-  # # # # # #
-  # S E T S #
-  # # # # # #
+  #-- S E T S --#
 
   # Sets a value for a specific cell
   def set_cell(self, row, column, value):
@@ -89,12 +84,10 @@ class SudokuTable():
       raise ItemNotFound("The cell in row {} and column {} is out of range.".format(row, column))
 
 
-  # # # # # # # # # # # # # # # # # # #
-  # P R I V A T E   F U N C T I O N S #
-  # # # # # # # # # # # # # # # # # # #
+  #-- P R I V A T E   F U N C T I O N S --#
 
   def _valid_value(self, value):
-    if value == self._empty_index or value in range(1, (self.get_full_size())+1):
+    if value is None or value in range(1, (self.get_full_size())+1):
       return True
     else:
       return False
@@ -105,7 +98,7 @@ class SudokuTable():
     for row in range(self.get_full_size()):
       process_row = list()
       for column in range(self.get_full_size()):
-        process_row.append(self._empty_index)
+        process_row.append(None)
       process_table.append(process_row)
     return process_table
 

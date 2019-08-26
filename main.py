@@ -61,15 +61,20 @@ class SudokuTable():
         wip_square.append(cell)
     return wip_square
 
-  # Returns the size of the table
-  # Classic sudoku table would be 3!
+  # returns the size of the table
+  # classic sudoku table would be 3!
   def get_size(self):
     return self._table_size
   
-  # Returns the full size of the table (the size squared)
-  # Classic sudoku table would be 9!
+  # returns the full size of the table (the size squared)
+  # classic sudoku table would be 9!
   def get_full_size(self):
     return self._table_full_size
+  
+  # returns a list of the valid inputs in the table
+  # classic sudoku table would be 1-9!
+  def get_valid_inputs(self):
+    return range(1, self.get_full_size() + 1)
 
 
   #-- S E T S --#
@@ -148,6 +153,49 @@ class SudokuTable():
       if self.check_valid_square(square_row, square_column) == False:
         return False
     return True
+
+  def solve(self):
+    return self._solving_recursion(0, 0)    
+
+  def _solving_recursion(self, row, col):
+
+    if (row, col) == (None, None):
+      return True  # will happed if the last cell isn't None
+
+    next_cell = self._get_next_cell(row, col)
+
+    value_before = self.get_cell(row, col)
+    if value_before is not None:
+      return self._solving_recursion(next_cell[0], next_cell[1])
+
+    for cur_input in self.get_valid_inputs():
+      try:
+        self.set_cell(row, col, cur_input)
+      except SudokuMistake:
+        continue
+
+      next_result = self._solving_recursion(next_cell[0], next_cell[1])
+      if next_result:
+        return True  # solution found
+
+
+    self.set_cell(row, col, value_before)
+    return False
+    
+  
+  # returns the position (row, col) of the next cell in the table
+  # cell (0, 0) located in the top left!
+  def _get_next_cell(self, row, col):
+
+    if row >= self.get_full_size() - 1:
+      if col >= self.get_full_size() - 1:
+        return (None, None)  # final cell
+    
+    else:
+      if col >= self.get_full_size() - 1:
+        return (row + 1, 0)
+    
+    return (row, col + 1)
 
 
 # # # # # # # # # # # #

@@ -9,15 +9,41 @@ class SudokuTable():
     self._table_full_size = size**2
     self._table = self._gen_empty_table()
   
-  def print_table(self):
-    for row in self._table:
-      wip_row = '|'
-      for item in row:
+  def print_table(self, palette=['─','│','┌','┐','└','┘',' ']):
+    
+    line_middle = ''
+    for i in range(((3 + len(str(self.get_full_size()))) * self.get_full_size()) - 1):
+      line_middle += palette[0]
+    
+    print(palette[2] + line_middle + palette[3])  # prints top line
+    
+    for index_row, row  in enumerate(self._table):
+      
+      # print rows break
+      if index_row % self.get_size() == 0 and index_row != 0:
+        print(palette[1] + line_middle + palette[1])
+
+      
+      wip_row = ''
+      for index_col, item in enumerate(row):
+
+        item_format = [None, None]
         if item is None:
-          wip_row += ' x |'
+          item_format[0] = palette[6]
         else:
-          wip_row += ' {} |'.format(item)
-      print(wip_row)
+          item_format[0] = item
+        
+        if index_col % self.get_size() == 0:
+          item_format[1] = palette[1]
+        else:
+          item_format[1] = palette[6]
+        
+        wip_row += '{} {} '.format(item_format[1], item_format[0])
+      print(wip_row + palette[1])
+    
+
+    print(palette[4] + line_middle + palette[5])  # prints bottom line
+
   
 
   #-- G E T S --#

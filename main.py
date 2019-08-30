@@ -43,7 +43,7 @@ class SudokuTable():
 
         print(palette[4] + line_middle + palette[5])  # prints bottom line
 
-    #-- G E T S --#
+    # -- G E T S -- #
 
     # returns list of all the rows in the table
 
@@ -101,7 +101,7 @@ class SudokuTable():
     def get_valid_inputs(self):
         return range(1, self.get_full_size() + 1)
 
-    #-- S E T S --#
+    # -- S E T S -- #
 
     # Sets a value for a specific cell
 
@@ -125,10 +125,10 @@ class SudokuTable():
             raise SudokuMistake(
                 "{} can't be placed in row {} and column {}.".format(value, row, column))
 
-    #-- P R I V A T E   F U N C T I O N S --#
+    # -- P R I V A T E   F U N C T I O N S -- #
 
     def _valid_value(self, value):
-        if value is None or value in range(1, (self.get_full_size())+1):
+        if value is None or value in range(1, (self.get_full_size()) + 1):
             return True
         else:
             return False
@@ -143,7 +143,7 @@ class SudokuTable():
             process_table.append(process_row)
         return process_table
 
-    #-- C H E C K S --#
+    # -- C H E C K S -- #
 
     def check_valid_row(self, row_index):
         return self._check_valid_list(self.get_row(row_index))
@@ -169,15 +169,15 @@ class SudokuTable():
     def check_valid_table(self):
         for cur_index in range(self.get_full_size()):
 
-            if self.check_valid_row(cur_index) == False:
+            if not self.check_valid_row(cur_index):
                 return False
 
-            if self.check_valid_column(cur_index) == False:
+            if not self.check_valid_column(cur_index):
                 return False
 
             square_row = (cur_index // self.get_size()) * self.get_size()
             square_column = (cur_index % self.get_size()) * self.get_size()
-            if self.check_valid_square(square_row, square_column) == False:
+            if not self.check_valid_square(square_row, square_column):
                 return False
         return True
 
